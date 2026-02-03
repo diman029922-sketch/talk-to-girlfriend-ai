@@ -3,9 +3,9 @@
  * Calls the Python HTTP bridge to interact with Telegram
  */
 
-import { tool } from "ai";
 import { z } from "zod";
 import { config } from "../config";
+import { defineTool } from "./tooling";
 
 const API = config.telegramApiUrl;
 
@@ -57,9 +57,10 @@ interface Message {
 
 // Tools
 
-export const getChats = tool({
+export const getChats = defineTool({
+  name: "getChats",
   description: `List all Telegram chats (conversations). Returns chat ID, name, type, and last message preview. Use this to find someone's chat ID before reading or sending messages.`,
-  inputSchema: z.object({
+  schema: z.object({
     limit: z.number().min(1).max(100).default(30).describe("Number of chats to return"),
     chat_type: z
       .enum(["user", "chat", "channel"])
@@ -92,9 +93,10 @@ export const getChats = tool({
   },
 });
 
-export const getMessages = tool({
+export const getMessages = defineTool({
+  name: "getMessages",
   description: `Read messages from a specific Telegram chat. Returns message ID, text, sender, date. Use after getChats to get the chat_id.`,
-  inputSchema: z.object({
+  schema: z.object({
     chat_id: z
       .union([z.number(), z.string()])
       .describe("Chat ID (number) or username (string like '@username')"),
@@ -126,9 +128,10 @@ export const getMessages = tool({
   },
 });
 
-export const sendMessage = tool({
+export const sendMessage = defineTool({
+  name: "sendMessage",
   description: `Send a text message to a Telegram chat. Returns success status and message ID.`,
-  inputSchema: z.object({
+  schema: z.object({
     chat_id: z
       .union([z.number(), z.string()])
       .describe("Chat ID (number) or username (string like '@username')"),
@@ -152,9 +155,10 @@ export const sendMessage = tool({
   },
 });
 
-export const scheduleMessage = tool({
+export const scheduleMessage = defineTool({
+  name: "scheduleMessage",
   description: `Schedule a message to be sent at a future time. Perfect for sending good morning/night messages.`,
-  inputSchema: z.object({
+  schema: z.object({
     chat_id: z
       .union([z.number(), z.string()])
       .describe("Chat ID (number) or username (string like '@username')"),
@@ -178,9 +182,10 @@ export const scheduleMessage = tool({
   },
 });
 
-export const getChat = tool({
+export const getChat = defineTool({
+  name: "getChat",
   description: `Get detailed information about a specific chat by ID or username.`,
-  inputSchema: z.object({
+  schema: z.object({
     chat_id: z
       .union([z.number(), z.string()])
       .describe("Chat ID (number) or username (string like '@username')"),
@@ -191,9 +196,10 @@ export const getChat = tool({
   },
 });
 
-export const searchContacts = tool({
+export const searchContacts = defineTool({
+  name: "searchContacts",
   description: `Search for contacts by name, username, or phone number.`,
-  inputSchema: z.object({
+  schema: z.object({
     query: z.string().min(1).describe("Search query (name, username, or phone)"),
   }),
   execute: async ({ query }) => {
@@ -207,9 +213,10 @@ export const searchContacts = tool({
 
 // ============= NEW TOOLS =============
 
-export const getHistory = tool({
+export const getHistory = defineTool({
+  name: "getHistory",
   description: `Get full chat history (up to 500 messages). Use for getting more context about the conversation.`,
-  inputSchema: z.object({
+  schema: z.object({
     chat_id: z.union([z.number(), z.string()]).describe("Chat ID or username"),
     limit: z.number().min(1).max(500).default(100).describe("Number of messages"),
   }),
@@ -231,9 +238,10 @@ export const getHistory = tool({
   },
 });
 
-export const sendReaction = tool({
+export const sendReaction = defineTool({
+  name: "sendReaction",
   description: `Send a reaction emoji to a message. Perfect for reacting to her messages with ❤️ 🔥 😂 😮 😢 🎉 👍 👎`,
-  inputSchema: z.object({
+  schema: z.object({
     chat_id: z.union([z.number(), z.string()]).describe("Chat ID or username"),
     message_id: z.number().describe("Message ID to react to"),
     emoji: z.string().describe("Emoji to react with (e.g., '❤️', '🔥', '😂')"),
@@ -251,9 +259,10 @@ export const sendReaction = tool({
   },
 });
 
-export const replyToMessage = tool({
+export const replyToMessage = defineTool({
+  name: "replyToMessage",
   description: `Reply directly to a specific message. Creates a reply thread.`,
-  inputSchema: z.object({
+  schema: z.object({
     chat_id: z.union([z.number(), z.string()]).describe("Chat ID or username"),
     message_id: z.number().describe("Message ID to reply to"),
     message: z.string().min(1).describe("Reply text"),
@@ -270,9 +279,10 @@ export const replyToMessage = tool({
   },
 });
 
-export const editMessage = tool({
+export const editMessage = defineTool({
+  name: "editMessage",
   description: `Edit a message you sent. Fix typos or update content.`,
-  inputSchema: z.object({
+  schema: z.object({
     chat_id: z.union([z.number(), z.string()]).describe("Chat ID or username"),
     message_id: z.number().describe("Message ID to edit"),
     new_text: z.string().min(1).describe("New message text"),
@@ -289,9 +299,10 @@ export const editMessage = tool({
   },
 });
 
-export const deleteMessage = tool({
+export const deleteMessage = defineTool({
+  name: "deleteMessage",
   description: `Delete a message. Use to remove embarrassing messages.`,
-  inputSchema: z.object({
+  schema: z.object({
     chat_id: z.union([z.number(), z.string()]).describe("Chat ID or username"),
     message_id: z.number().describe("Message ID to delete"),
   }),
@@ -304,9 +315,10 @@ export const deleteMessage = tool({
   },
 });
 
-export const forwardMessage = tool({
+export const forwardMessage = defineTool({
+  name: "forwardMessage",
   description: `Forward a message to another chat. Great for sharing memes or content.`,
-  inputSchema: z.object({
+  schema: z.object({
     chat_id: z.union([z.number(), z.string()]).describe("Source chat ID"),
     message_id: z.number().describe("Message ID to forward"),
     to_chat_id: z.union([z.number(), z.string()]).describe("Destination chat ID"),
@@ -321,9 +333,10 @@ export const forwardMessage = tool({
   },
 });
 
-export const markAsRead = tool({
+export const markAsRead = defineTool({
+  name: "markAsRead",
   description: `Mark all messages in a chat as read.`,
-  inputSchema: z.object({
+  schema: z.object({
     chat_id: z.union([z.number(), z.string()]).describe("Chat ID or username"),
   }),
   execute: async ({ chat_id }) => {
@@ -335,9 +348,10 @@ export const markAsRead = tool({
   },
 });
 
-export const pinMessage = tool({
+export const pinMessage = defineTool({
+  name: "pinMessage",
   description: `Pin an important message in the chat.`,
-  inputSchema: z.object({
+  schema: z.object({
     chat_id: z.union([z.number(), z.string()]).describe("Chat ID or username"),
     message_id: z.number().describe("Message ID to pin"),
   }),
@@ -350,9 +364,10 @@ export const pinMessage = tool({
   },
 });
 
-export const searchMessages = tool({
+export const searchMessages = defineTool({
+  name: "searchMessages",
   description: `Search for messages in a chat by text. Find specific conversations.`,
-  inputSchema: z.object({
+  schema: z.object({
     chat_id: z.union([z.number(), z.string()]).describe("Chat ID or username"),
     query: z.string().min(1).describe("Search text"),
     limit: z.number().min(1).max(100).default(20).describe("Max results"),
@@ -374,9 +389,10 @@ export const searchMessages = tool({
   },
 });
 
-export const getUserStatus = tool({
+export const getUserStatus = defineTool({
+  name: "getUserStatus",
   description: `Check if a user is online. See when she was last active.`,
-  inputSchema: z.object({
+  schema: z.object({
     user_id: z.union([z.number(), z.string()]).describe("User ID or username"),
   }),
   execute: async ({ user_id }) => {
@@ -387,9 +403,10 @@ export const getUserStatus = tool({
   },
 });
 
-export const getUserPhotos = tool({
+export const getUserPhotos = defineTool({
+  name: "getUserPhotos",
   description: `Get a user's profile photos.`,
-  inputSchema: z.object({
+  schema: z.object({
     user_id: z.union([z.number(), z.string()]).describe("User ID or username"),
     limit: z.number().min(1).max(50).default(10).describe("Max photos"),
   }),
@@ -402,9 +419,10 @@ export const getUserPhotos = tool({
   },
 });
 
-export const searchGifs = tool({
+export const searchGifs = defineTool({
+  name: "searchGifs",
   description: `Search for GIFs to send. Returns a list of available GIFs.`,
-  inputSchema: z.object({
+  schema: z.object({
     query: z.string().min(1).describe("GIF search query (e.g., 'love', 'funny', 'cute')"),
     limit: z.number().min(1).max(50).default(10).describe("Max results"),
   }),

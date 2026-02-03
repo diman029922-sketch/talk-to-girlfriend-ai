@@ -1,10 +1,10 @@
 # CLAUDE.md
 
-This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+This file provides guidance to an AI coding agent when working with code in this repository.
 
 ## Project Overview
 
-Telegram MCP Server - a full-featured Telegram integration for Claude, Cursor, and MCP-compatible clients. Uses Telethon for Telegram API access and exposes 60+ tools via the Model Context Protocol.
+Telegram MCP Server - a full-featured Telegram integration for MCP-compatible clients. Uses Telethon for Telegram API access and exposes 60+ tools via the Model Context Protocol.
 
 ## Commands
 
@@ -56,9 +56,9 @@ Single-file MCP server exposing Telegram functionality as tools. Key components:
 - `log_and_format_error()` - centralized error handling with error codes logged to `mcp_errors.log`
 
 ### TypeScript Agent (`agent/`)
-CLI agent using Claude Sonnet via Vercel AI Gateway. Communicates with Telegram through an HTTP bridge:
+CLI агент использует GigaChat API и общается с Telegram через HTTP bridge:
 - `telegram_api.py` - FastAPI HTTP bridge exposing Telethon via REST (runs on port 8765)
-- `agent/src/agent.ts` - AI agent using @ai-sdk/gateway
+- `agent/src/agent.ts` - AI agent using GigaChat wrapper
 - `agent/src/tools/` - Tool definitions (telegram.ts, nia.ts, aiify.ts)
 
 ### ID Validation
@@ -82,6 +82,7 @@ Required in `.env`:
 - `TELEGRAM_SESSION_STRING` (preferred) or `TELEGRAM_SESSION_NAME` (file-based)
 
 For TypeScript agent:
-- `AI_GATEWAY_API_KEY` - Vercel AI Gateway key
+- `GIGACHAT_AUTH_KEY` - GigaChat authorization key (Basic)
+- `GIGACHAT_SCOPE` - GigaChat scope (e.g., GIGACHAT_API_PERS)
 - `NIA_API_KEY` - Nia API key
 - `TELEGRAM_API_URL` - HTTP bridge URL (default: http://localhost:8765)

@@ -13,24 +13,24 @@ import { config, validateConfig } from "./config";
 const BANNER = `
 ${pc.cyan("╔════════════════════════════════════════════╗")}
 ${pc.cyan("║")}  ${pc.bold(pc.magenta("🤖 Telegram AI Agent"))}                     ${pc.cyan("║")}
-${pc.cyan("║")}  ${pc.dim("Your AI wingman for Telegram")}               ${pc.cyan("║")}
+${pc.cyan("║")}  ${pc.dim("Твой AI-напарник для Telegram")}             ${pc.cyan("║")}
 ${pc.cyan("╚════════════════════════════════════════════╝")}
 `;
 
 // Help text
 const HELP_TEXT = `
-${pc.bold("Commands:")}
-  ${pc.yellow("/help")}     - Show this help message
-  ${pc.yellow("/clear")}    - Clear conversation history
-  ${pc.yellow("/status")}   - Check connection status
-  ${pc.yellow("/quit")}     - Exit the agent
+${pc.bold("Команды:")}
+  ${pc.yellow("/help")}     - Показать эту справку
+  ${pc.yellow("/clear")}    - Очистить историю диалога
+  ${pc.yellow("/status")}   - Проверить статус подключения
+  ${pc.yellow("/quit")}     - Выйти из агента
 
-${pc.bold("Example prompts:")}
-  ${pc.dim("• Show me my recent chats")}
-  ${pc.dim("• Read the last 5 messages from @username")}
-  ${pc.dim("• What should I reply to her message about coffee?")}
-  ${pc.dim("• Send 'Good morning beautiful ☀️' to @username")}
-  ${pc.dim("• AI-ify her message 'I miss you' in a flirty way")}
+${pc.bold("Примеры запросов:")}
+  ${pc.dim("• Покажи мои последние чаты")}
+  ${pc.dim("• Прочитай последние 5 сообщений от @username")}
+  ${pc.dim("• Что мне ответить на её сообщение про кофе?")}
+  ${pc.dim("• Отправь 'доброе утро, красотка ☀️' в @username")}
+  ${pc.dim("• Сделай AI-версию её сообщения 'я скучаю' в флиртовом стиле")}
 `;
 
 async function checkTelegramConnection(): Promise<boolean> {
@@ -53,32 +53,32 @@ async function main() {
   // Validate configuration
   validateConfig();
 
-  p.intro(pc.bgCyan(pc.black(" Welcome to your Telegram AI Agent ")));
+  p.intro(pc.bgCyan(pc.black(" Добро пожаловать в Telegram AI Agent ")));
 
   // Check Telegram connection
   const connectionSpinner = p.spinner();
-  connectionSpinner.start("Checking Telegram connection...");
+  connectionSpinner.start("Проверяю подключение к Telegram...");
 
   const isConnected = await checkTelegramConnection();
 
   if (isConnected) {
-    connectionSpinner.stop(pc.green("✓ Telegram connected"));
+    connectionSpinner.stop(pc.green("✓ Telegram подключен"));
   } else {
-    connectionSpinner.stop(pc.yellow("⚠ Telegram API not connected"));
+    connectionSpinner.stop(pc.yellow("⚠ Telegram API не подключен"));
     p.note(
-      `Start the Telegram API bridge first:\n${pc.cyan("python telegram_api.py")}`,
-      "Setup Required"
+      `Сначала запусти Telegram API bridge:\n${pc.cyan("python telegram_api.py")}`,
+      "Требуется настройка"
     );
   }
 
   // Show config status
   const configStatus = [
-    `Model: ${pc.cyan(config.model)}`,
+    `Модель: ${pc.cyan(config.gigaChatModel)}`,
     `Telegram API: ${pc.cyan(config.telegramApiUrl)}`,
-    `Nia Source: ${config.niaCodebaseSource ? pc.green("✓ Configured") : pc.yellow("Not set")}`,
+    `Источник Nia: ${config.niaCodebaseSource ? pc.green("✓ Настроен") : pc.yellow("Не задан")}`,
   ].join("\n");
 
-  p.note(configStatus, "Configuration");
+  p.note(configStatus, "Конфигурация");
 
   console.log(HELP_TEXT);
 
@@ -86,12 +86,12 @@ async function main() {
   while (true) {
     const input = await p.text({
       message: pc.cyan("You"),
-      placeholder: "Type your message or /help for commands...",
+      placeholder: "Введите сообщение или /help для команд...",
     });
 
     // Handle cancellation (Ctrl+C)
     if (p.isCancel(input)) {
-      p.outro(pc.dim("Goodbye! 👋"));
+      p.outro(pc.dim("Пока! 👋"));
       process.exit(0);
     }
 
@@ -110,38 +110,38 @@ async function main() {
 
         case "/clear":
           clearHistory();
-          p.log.success("Conversation history cleared");
+          p.log.success("История диалога очищена");
           continue;
 
         case "/status":
           const connected = await checkTelegramConnection();
           p.log.info(
             connected
-              ? pc.green("Telegram: Connected ✓")
-              : pc.red("Telegram: Not connected ✗")
+              ? pc.green("Telegram: Подключен ✓")
+              : pc.red("Telegram: Не подключен ✗")
           );
-          p.log.info(`Messages in history: ${getHistoryLength()}`);
+          p.log.info(`Сообщений в истории: ${getHistoryLength()}`);
           continue;
 
         case "/quit":
         case "/exit":
         case "/q":
-          p.outro(pc.dim("Goodbye! 👋"));
+          p.outro(pc.dim("Пока! 👋"));
           process.exit(0);
 
         default:
-          p.log.warn(`Unknown command: ${command}. Type /help for available commands.`);
+          p.log.warn(`Неизвестная команда: ${command}. Введите /help для списка команд.`);
           continue;
       }
     }
 
     // Process with AI agent
     const spinner = p.spinner();
-    spinner.start(pc.dim("Thinking..."));
+    spinner.start(pc.dim("Думаю..."));
 
     try {
       const stream = await chat(message);
-      spinner.stop(pc.magenta("Agent"));
+      spinner.stop(pc.magenta("Агент"));
 
       // Stream the response
       let response = "";
@@ -158,12 +158,12 @@ async function main() {
 
       if (error.message?.includes("Telegram API")) {
         p.log.error(
-          `Telegram API error. Make sure the bridge is running:\n${pc.cyan("python telegram_api.py")}`
+          `Ошибка Telegram API. Убедитесь, что bridge запущен:\n${pc.cyan("python telegram_api.py")}`
         );
-      } else if (error.message?.includes("AI_GATEWAY")) {
-        p.log.error("AI Gateway error. Check your AI_GATEWAY_API_KEY.");
+      } else if (error.message?.includes("GIGACHAT")) {
+        p.log.error("Ошибка GigaChat. Проверьте GIGACHAT_AUTH_KEY и GIGACHAT_SCOPE.");
       } else {
-        p.log.error(error.message || "An unexpected error occurred");
+        p.log.error(error.message || "Произошла непредвиденная ошибка");
       }
     }
   }
@@ -171,6 +171,6 @@ async function main() {
 
 // Run
 main().catch((error) => {
-  console.error(pc.red("Fatal error:"), error);
+  console.error(pc.red("Критическая ошибка:"), error);
   process.exit(1);
 });
