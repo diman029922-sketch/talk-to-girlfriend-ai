@@ -36,15 +36,24 @@ export const config = {
   niaApiBase: "https://apigcp.trynia.ai/v2",
   niaCodebaseSource: process.env.NIA_CODEBASE_SOURCE || "",
 
-  // AI Model - Claude Sonnet 4.5
-  model: "anthropic/claude-sonnet-4.5",
+  // GigaChat API
+  gigaChatAuthKey: process.env.GIGACHAT_AUTH_KEY || "",
+  gigaChatScope: process.env.GIGACHAT_SCOPE || "GIGACHAT_API_PERS",
+  gigaChatAuthUrl:
+    process.env.GIGACHAT_AUTH_URL || "https://ngw.devices.sberbank.ru:9443/api/v2/oauth",
+  gigaChatApiBase:
+    process.env.GIGACHAT_API_BASE || "https://gigachat.devices.sberbank.ru/api/v1",
+  gigaChatModel: process.env.GIGACHAT_MODEL || "GigaChat",
 } as const;
 
 export function validateConfig() {
   const missing: string[] = [];
 
-  if (!process.env.AI_GATEWAY_API_KEY) {
-    missing.push("AI_GATEWAY_API_KEY");
+  if (!config.gigaChatAuthKey) {
+    missing.push("GIGACHAT_AUTH_KEY");
+  }
+  if (!config.gigaChatScope) {
+    missing.push("GIGACHAT_SCOPE");
   }
   if (!config.niaApiKey) {
     missing.push("NIA_API_KEY");

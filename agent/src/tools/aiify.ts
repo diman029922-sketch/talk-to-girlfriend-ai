@@ -3,17 +3,18 @@
  * Uses the agent's LLM to generate responses based on pickup lines context
  */
 
-import { tool } from "ai";
 import { z } from "zod";
+import { defineTool } from "./tooling";
 
-export const aiifyMessage = tool({
+export const aiifyMessage = defineTool({
+  name: "aiifyMessage",
   description: `Transform a message (usually her message) into a witty, romantic, or clever response. This tool helps you craft the perfect reply by:
 1. Analyzing the incoming message's tone and context
 2. Searching your pickup lines for relevant content
 3. Generating a response that matches the vibe
 
 Use this when you want to AI-ify your response to her message.`,
-  inputSchema: z.object({
+  schema: z.object({
     her_message: z.string().describe("The message she sent that you want to respond to"),
     style: z
       .enum(["flirty", "romantic", "funny", "witty", "sweet", "playful", "caring"])

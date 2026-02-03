@@ -1,25 +1,25 @@
 # Telegram AI Dating Agent
 
-An AI-powered Telegram agent that helps you craft witty, engaging messages for your conversations. Built with Claude Sonnet, [Nia](https://trynia.ai) semantic search, and a full-featured Telegram MCP integration.
+AI‑агент для Telegram, который помогает придумывать остроумные и вовлекающие ответы. В этом варианте используется GigaChat API, семантический поиск Nia и полноценный Telegram bridge на Telethon.
 
-## What It Does
+## Что умеет
 
-- **Smart Reply Suggestions**: Get AI-powered response suggestions based on conversation context
-- **500+ Pickup Lines**: Semantic search through a curated collection of pickup lines indexed with Nia
-- **Dating Guides**: Search through guides on how to talk to women, conversation starters, and flirting tips
-- **Message Enhancement**: Transform boring messages into witty, engaging ones
-- **Full Telegram Access**: Read messages, send replies, manage chats - all through natural language
+- **Умные подсказки ответов** на основе контекста переписки
+- **500+ пикап‑лайнов** с семантическим поиском через Nia
+- **Гайды по общению** (как поддерживать разговор, флирт, идеи для свиданий)
+- **Улучшение сообщений** (перефразировать в более романтичный/игривый стиль)
+- **Полный доступ к Telegram** (читать, отправлять, управлять чатами)
 
 ## Powered by Nia
 
-This agent uses [Nia](https://trynia.ai) as its knowledge retrieval engine. Nia indexes and searches through:
-- 500+ curated pickup lines (funny, cheesy, clever, romantic)
-- Guides on conversation techniques
-- Tips for keeping conversations engaging
+Агент использует [Nia](https://trynia.ai) как поисковый движок. Nia индексирует:
+- 500+ подборок пикап‑лайнов
+- гайды по общению
+- советы по поддержанию диалога
 
-You can index your own content by creating a source at [trynia.ai](https://trynia.ai).
+Вы можете индексировать свой контент в [trynia.ai](https://trynia.ai).
 
-## Architecture
+## Архитектура
 
 ```
 ┌──────────────────┐     ┌──────────────────┐     ┌──────────────────┐
@@ -29,47 +29,53 @@ You can index your own content by creating a source at [trynia.ai](https://tryni
          │
          ▼
 ┌──────────────────┐     ┌──────────────────┐
-│  Claude Sonnet   │     │    Nia API       │
-│   (AI Gateway)   │     │ (trynia.ai)      │
+│    GigaChat      │     │    Nia API       │
+│   (chat API)     │     │ (trynia.ai)      │
 └──────────────────┘     └──────────────────┘
-                         - 500+ pickup lines
-                         - Dating guides
-                         - Conversation tips
+                         - 500+ пикап‑лайнов
+                         - гайды по знакомствам
+                         - советы по общению
 ```
 
-## Quick Start
+## Быстрый старт
 
-### 1. Get Telegram API Credentials
+### 1. Получите Telegram API credentials
 
-Get your API credentials at [my.telegram.org/apps](https://my.telegram.org/apps).
+Получите API‑ключи на [my.telegram.org/apps](https://my.telegram.org/apps).
 
-### 2. Install & Configure
+### 2. Получите доступ к GigaChat
+
+1. Создайте проект в GigaChat (через личный кабинет поставщика).
+2. Получите **Authorization key** (для Basic‑авторизации) и **scope**.
+3. Сохраните их как `GIGACHAT_AUTH_KEY` и `GIGACHAT_SCOPE`.
+
+### 3. Установка и настройка
 
 ```bash
-# Clone the repo
+# Клонируем репозиторий
 git clone https://github.com/arlanrakh/talk-to-girlfriend-ai.git
 cd talk-to-girlfriend-ai
 
-# Install Python dependencies
+# Устанавливаем Python зависимости
 uv sync
 
-# Generate Telegram session string
+# Генерируем Telegram session string
 uv run session_string_generator.py
 
-# Configure environment
+# Конфигурируем окружение
 cp .env.example .env
-# Edit .env with your credentials
+# Отредактируйте .env со своими ключами
 ```
 
-### 3. Start the Telegram API Bridge
+### 4. Запуск Telegram API Bridge
 
 ```bash
 python telegram_api.py
 ```
 
-This runs a FastAPI server on port 8765 that bridges the TypeScript agent to Telegram.
+Это поднимает FastAPI сервер на порту 8765, который связывает TypeScript агент и Telegram.
 
-### 4. Run the AI Agent
+### 5. Запуск агента
 
 ```bash
 cd agent
@@ -77,68 +83,115 @@ bun install
 bun run dev
 ```
 
-## Usage Examples
-
-Once running, interact with natural language:
+## Примеры использования
 
 ```
-# Reading & Sending
-> Show me messages from @her_username
-> Send "Hey, I was just thinking about you" to @her_username
-> Reply to her last message with something witty
+# Чтение и отправка
+> Покажи сообщения от @her_username
+> Отправь "я думал о тебе" в @her_username
+> Ответь на её последнее сообщение чем‑то остроумным
 
-# Reactions
-> React to her last message with ❤️
-> Send a 🔥 reaction to message 123
+# Реакции
+> Поставь ❤️ на её последнее сообщение
+> Отправь 🔥 реакцию на сообщение 123
 
-# Search & History
-> Search our chat for "dinner plans"
-> Show me the last 50 messages with her
-> Find me a funny pickup line about pizza
+# Поиск и история
+> Найди в нашем чате "ужин"
+> Покажи последние 50 сообщений с ней
+> Подбери смешной пикап‑лайн про пиццу
 
-# AI Assistance
-> What should I reply to her message about coffee?
-> Make this message more flirty: "want to hang out tomorrow?"
-> Search for tips on how to keep a conversation going
+# AI‑помощь
+> Что мне ответить на её сообщение про кофе?
+> Сделай это сообщение более флиртовым: "хочешь встретиться завтра?"
+> Поиск советов как поддержать разговор
 
-# User Info
-> Is she online right now?
-> Check her status
+# Инфо о пользователе
+> Она сейчас онлайн?
+> Проверь её статус
 
-# Message Management
-> Edit my last message to fix the typo
-> Delete message 456
-> Forward that meme to @friend
+# Управление сообщениями
+> Исправь моё последнее сообщение
+> Удали сообщение 456
+> Перешли мем @friend
 ```
 
-### Agent Commands
+### Команды агента
 
-- `/help` - Show help
-- `/clear` - Clear conversation history
-- `/status` - Check connection status
-- `/quit` - Exit
+- `/help` — показать справку
+- `/clear` — очистить историю
+- `/status` — статус подключения
+- `/quit` — выход
 
-## Environment Variables
+## Переменные окружения
 
-Create a `.env` file in the project root:
+Создайте `.env` в корне проекта:
 
 ```env
-# Telegram API (Required)
+# Telegram API (обязательно)
 TELEGRAM_API_ID=your_api_id
 TELEGRAM_API_HASH=your_api_hash
 TELEGRAM_SESSION_STRING=your_session_string
 
-# AI Services (Required for agent)
-AI_GATEWAY_API_KEY=your_vercel_ai_gateway_key
+# GigaChat (обязательно для агента)
+GIGACHAT_AUTH_KEY=your_gigachat_auth_key
+GIGACHAT_SCOPE=GIGACHAT_API_PERS
+GIGACHAT_AUTH_URL=https://ngw.devices.sberbank.ru:9443/api/v2/oauth
+GIGACHAT_API_BASE=https://gigachat.devices.sberbank.ru/api/v1
+GIGACHAT_MODEL=GigaChat
+
+# Nia (обязательно для поиска)
 NIA_API_KEY=your_nia_api_key
 NIA_CODEBASE_SOURCE=your_pickup_lines_source_uuid
 ```
 
-## Alternative: Use as MCP Server
+## Пример запроса к GigaChat
 
-You can also use this as a standalone MCP server with Claude Desktop or Cursor, without the AI agent.
+```json
+POST /api/v1/chat/completions
+{
+  "model": "GigaChat",
+  "messages": [
+    { "role": "system", "content": "Ты дружелюбный помощник." },
+    { "role": "user", "content": "Придумай игривый ответ." }
+  ],
+  "tools": [
+    {
+      "type": "function",
+      "function": {
+        "name": "searchPickupLines",
+        "description": "Поиск пикап‑лайнов",
+        "parameters": {
+          "type": "object",
+          "properties": { "query": { "type": "string" } },
+          "required": ["query"]
+        }
+      }
+    }
+  ]
+}
+```
 
-Add to your MCP config (`~/Library/Application Support/Claude/claude_desktop_config.json`):
+### Ожидаемый ответ
+
+```json
+{
+  "choices": [
+    {
+      "message": {
+        "role": "assistant",
+        "content": "можно начать с: 'я уже скучаю по твоим сообщениям'"
+      },
+      "finish_reason": "stop"
+    }
+  ]
+}
+```
+
+## Альтернатива: использовать как MCP сервер
+
+Вы можете использовать этот проект как MCP сервер без CLI агента.
+
+Добавьте в MCP конфиг вашего клиента (пример для macOS: `~/Library/Application Support/MCP/mcp_config.json`):
 
 ```json
 {
@@ -151,105 +204,68 @@ Add to your MCP config (`~/Library/Application Support/Claude/claude_desktop_con
 }
 ```
 
-This exposes 60+ Telegram tools including messaging, contacts, groups, channels, reactions, and more.
+Это откроет доступ к 60+ Telegram инструментам (сообщения, контакты, группы, реакции и т.д.).
 
-## Available Tools
+## Доступные инструменты
 
 ### Agent Tools (20+)
 
-**Core Messaging**
+**Основные**
 | Tool | Description |
 |------|-------------|
-| `getChats` | List all conversations |
-| `getMessages` | Read messages from a chat |
-| `sendMessage` | Send a message |
-| `getChat` | Get chat details |
-| `searchContacts` | Search contacts |
+| `getChats` | список чатов |
+| `getMessages` | чтение сообщений |
+| `sendMessage` | отправка сообщения |
+| `getChat` | детали чата |
+| `searchContacts` | поиск контактов |
 
-**Reactions & Replies**
+**Реакции и ответы**
 | Tool | Description |
 |------|-------------|
-| `sendReaction` | React with ❤️ 🔥 😂 etc |
-| `replyToMessage` | Reply to specific messages |
+| `sendReaction` | реакция эмодзи |
+| `replyToMessage` | ответ на сообщение |
 
-**Edit & Delete**
+**Правка и удаление**
 | Tool | Description |
 |------|-------------|
-| `editMessage` | Fix typos after sending |
-| `deleteMessage` | Remove messages |
+| `editMessage` | изменить сообщение |
+| `deleteMessage` | удалить сообщение |
 
-**History & Search**
+**История и поиск**
 | Tool | Description |
 |------|-------------|
-| `getHistory` | Get up to 500 messages |
-| `searchMessages` | Search chat by text |
+| `getHistory` | история до 500 сообщений |
+| `searchMessages` | поиск в чате |
 
-**Forward & Pin**
+**Форвард и закреп**
 | Tool | Description |
 |------|-------------|
-| `forwardMessage` | Forward to another chat |
-| `pinMessage` | Pin important messages |
-| `markAsRead` | Mark messages as read |
+| `forwardMessage` | переслать сообщение |
+| `pinMessage` | закрепить сообщение |
+| `markAsRead` | отметить как прочитанное |
 
-**User Info**
+**Инфо о пользователе**
 | Tool | Description |
 |------|-------------|
-| `getUserStatus` | Check if user is online |
-| `getUserPhotos` | Get profile photos |
+| `getUserStatus` | статус онлайн |
+| `getUserPhotos` | фото профиля |
 
-**Media**
+**Медиа**
 | Tool | Description |
 |------|-------------|
-| `searchGifs` | Search for GIFs |
+| `searchGifs` | поиск GIF |
 
 **Nia Search**
 | Tool | Description |
 |------|-------------|
-| `searchPickupLines` | Search indexed pickup lines & dating advice |
-| `niaSearch` | General semantic search |
-| `webSearch` | Real-time web search |
+| `searchPickupLines` | поиск пикап‑лайнов и советов |
+| `niaSearch` | общий поиск |
+| `webSearch` | веб‑поиск |
 
 **AI Tools**
 | Tool | Description |
 |------|-------------|
-| `aiifyMessage` | Transform messages into witty responses |
+| `aiifyMessage` | улучшение сообщений |
 
 ### MCP Server Tools (60+)
-Full Telegram API access including:
-- Chat & Group Management (create, invite, admin, ban)
-- Messaging (send, reply, edit, delete, forward, pin, reactions)
-- Contact Management (add, search, block, import/export)
-- Media & Stickers
-- Privacy Settings
-- And much more...
-
-## Docker
-
-```bash
-docker build -t telegram-mcp:latest .
-docker compose up --build
-```
-
-## Troubleshooting
-
-- **Database lock errors**: Use session string auth instead of file-based
-- **Auth errors**: Regenerate session string with `uv run session_string_generator.py`
-- **Connection issues**: Check that `telegram_api.py` is running on port 8765
-- **Error logs**: Check `mcp_errors.log` for detailed errors
-
-## Security
-
-- Never commit your `.env` or session string
-- Session string = full Telegram account access
-- All processing is local, data only goes to Telegram API
-
-## Credits
-
-- Built on [telegram-mcp](https://github.com/chigwell/telegram-mcp) by [@chigwell](https://github.com/chigwell)
-- Knowledge retrieval powered by [Nia](https://trynia.ai)
-- Uses [Telethon](https://github.com/LonamiWebs/Telethon), [MCP](https://modelcontextprotocol.io/), and [Vercel AI SDK](https://sdk.vercel.ai/)
-
-## License
-
-[Apache 2.0](LICENSE)
-# talk-to-girlfriend-ai
+Полный доступ к Telegram API: чаты, группы, администрирование, медиа, реакции.

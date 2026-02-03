@@ -3,9 +3,9 @@
  * Search pickup lines, contextual knowledge, and web search
  */
 
-import { tool } from "ai";
 import { z } from "zod";
 import { config } from "../config";
+import { defineTool } from "./tooling";
 
 const API = config.niaApiBase;
 
@@ -50,9 +50,10 @@ interface SearchResponse {
 
 // Tools
 
-export const searchPickupLines = tool({
+export const searchPickupLines = defineTool({
+  name: "searchPickupLines",
   description: `Search your indexed pickup lines and conversation knowledge base using semantic search. Use this to find relevant pickup lines, flirty responses, conversation starters, or dating advice based on context. THIS IS YOUR MAIN TOOL FOR RELATIONSHIP ADVICE.`,
-  inputSchema: z.object({
+  schema: z.object({
     query: z
       .string()
       .describe(
@@ -105,9 +106,10 @@ export const searchPickupLines = tool({
   },
 });
 
-export const niaSearch = tool({
+export const niaSearch = defineTool({
+  name: "niaSearch",
   description: `General semantic search across all your indexed Nia data sources (documentation, repos, etc). Use for broader context when pickup lines search doesn't have what you need.`,
-  inputSchema: z.object({
+  schema: z.object({
     query: z.string().describe("Search query - ask a natural language question"),
   }),
   execute: async ({ query }) => {
@@ -136,9 +138,10 @@ export const niaSearch = tool({
   },
 });
 
-export const webSearch = tool({
+export const webSearch = defineTool({
+  name: "webSearch",
   description: `Search the web for real-time information. Use sparingly - only when you need current information not available in the knowledge base.`,
-  inputSchema: z.object({
+  schema: z.object({
     query: z.string().describe("Web search query"),
     num_results: z.number().min(1).max(10).default(5).describe("Number of results"),
     category: z
